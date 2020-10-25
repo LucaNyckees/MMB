@@ -54,7 +54,7 @@ cost_driving = DefineVariable ('cost_driving', cost_driving_fuel + cost_driving_
 # Utilities
 Walking = ASC_WALKING  + BETA_TIME_WALKING * dur_walking + BETA_DISTANCE_AGE_WALKING * (distance * age)
 Cycling = ASC_CYCLING  + BETA_TIME_CYCLING * dur_cycling + BETA_DISTANCE_AGE_CYCLING * (distance * age)
-Driving = ASC_DRIVING  + BETA_COST * cost_driving + BETA_TIME_DRIVING * dur_driving + BETA_DISTANCE_DRIVING * (distance * age)
+Driving = ASC_DRIVING  + BETA_COST * cost_driving + BETA_TIME_DRIVING * dur_driving + BETA_DISTANCE_AGE_DRIVING * (distance * age)
 Pt = ASC_PT  + BETA_COST * cost_transit + BETA_TIME_PT * dur_pt + BETA_DISTANCE_AGE_PT * (distance * age)
 V = {1: Walking,2: Cycling,3: Pt,4: Driving}
 av = {1: 1,2: 1, 3: 1, 4: 1}
