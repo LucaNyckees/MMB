@@ -30,14 +30,16 @@ ASC_CYCLING	 = Beta('ASC_CYCLING',0,None,None,0)
 ASC_DRIVING = Beta('ASC_DRIVING',0,None,None,0)
 ASC_PT = Beta('ASC_PT',0,None,None,0)
 BETA_COST	 = Beta('BETA_COST',0,None,None,0)
-BETA_TIME_AGE_WALKING	 = Beta('BETA_TIME_AGE_WALKING',0,None,None,0)
-BETA_TIME_AGE_CYCLING	 = Beta('BETA_TIME_AGE_CYCLING',0,None,None,0)
-BETA_TIME_AGE_DRIVING	 = Beta('BETA_TIME_AGE_DRIVING',0,None,None,0)
-BETA_TIME_AGE_PT	 = Beta('BETA_TIME_AGE_PT',0,None,None,0)
-BETA_DISTANCE_WALKING = Beta('BETA_DISTANCE_WALKING',0,None,None,0)
-BETA_DISTANCE_CYCLING = Beta('BETA_DISTANCE_CYCLING',0,None,None,0)
-BETA_DISTANCE_DRIVING = Beta('BETA_DISTANCE_DRIVING',0,None,None,0)
-BETA_DISTANCE_PT = Beta('BETA_DISTANCE_PT',0,None,None,0)
+
+BETA_DISTANCE_AGE_WALKING = Beta('BETA_DISTANCE_AGE_WALKING',0,None,None,0)
+BETA_DISTANCE_AGE_CYCLING = Beta('BETA_DISTANCE_AGE_CYCLING',0,None,None,0)
+BETA_DISTANCE_AGE_DRIVING = Beta('BETA_DISTANCE_AGE_DRIVING',0,None,None,0)
+BETA_DISTANCE_AGE_PT = Beta('BETA_DISTANCE_AGE_PT',0,None,None,0)
+
+BETA_TIME_WALKING	 = Beta('BETA_TIME_WALKING',0,None,None,0)
+BETA_TIME_CYCLING	 = Beta('BETA_TIME_CYCLING',0,None,None,0)
+BETA_TIME_DRIVING	 = Beta('BETA_TIME_DRIVING',0,None,None,0)
+BETA_TIME_PT	 = Beta('BETA_TIME_PT',0,None,None,0)
 
 #BETA_DISTANCE = Beta('BETA_DISTANCE',0,None,None,0)
 
@@ -50,10 +52,10 @@ cost_driving = DefineVariable ('cost_driving', cost_driving_fuel + cost_driving_
 # rail_cost_euro = DefineVariable('rail_cost_euro', rail_cost * rate_G2E,database)
 
 # Utilities
-Walking = ASC_WALKING  + BETA_TIME_AGE_WALKING * (age * dur_walking) + BETA_DISTANCE_WALKING * distance
-Cycling = ASC_CYCLING  + BETA_TIME_AGE_CYCLING * (age * dur_cycling) + BETA_DISTANCE_CYCLING * distance
-Driving = ASC_DRIVING  + BETA_COST * cost_driving + BETA_TIME_AGE_DRIVING * (age * dur_driving) + BETA_DISTANCE_DRIVING * distance
-Pt = ASC_PT  + BETA_COST * cost_transit + BETA_TIME_AGE_PT * (age * dur_pt) + BETA_DISTANCE_PT * distance
+Walking = ASC_WALKING  + BETA_TIME_WALKING * dur_walking + BETA_DISTANCE_AGE_WALKING * (distance * age)
+Cycling = ASC_CYCLING  + BETA_TIME_CYCLING * dur_cycling + BETA_DISTANCE_AGE_CYCLING * (distance * age)
+Driving = ASC_DRIVING  + BETA_COST * cost_driving + BETA_TIME_DRIVING * dur_driving + BETA_DISTANCE_DRIVING * (distance * age)
+Pt = ASC_PT  + BETA_COST * cost_transit + BETA_TIME_PT * dur_pt + BETA_DISTANCE_AGE_PT * (distance * age)
 V = {1: Walking,2: Cycling,3: Pt,4: Driving}
 av = {1: 1,2: 1, 3: 1, 4: 1}
 
