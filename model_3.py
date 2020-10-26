@@ -51,8 +51,8 @@ cost_driving = DefineVariable ('cost_driving', cost_driving_fuel + cost_driving_
 # rail_cost_euro = DefineVariable('rail_cost_euro', rail_cost * rate_G2E,database)
 # np.math.log(driving_license, 10) [np.math.log(driving_license[i]) for i]
 
-thresholds = [None, 0.5 * pandas.dur_pt.mean(), 1.5 * pandas.dur_pt.mean(), None]
-initialBetas = [0,0,0]
+thresholds = [None, 0.5 * pandas.dur_pt.mean(), pandas.dur_pt.mean(), 1.5 * pandas.dur_pt.mean(), None]
+initialBetas = [0,0,0,0]
 
 # Utilities
 Walking = ASC_WALKING  + BETA_TIME_WALKING * dur_walking + BETA_DISTANCE_AGE_WALKING * (distance * age)
