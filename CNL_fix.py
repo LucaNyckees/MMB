@@ -1,3 +1,8 @@
+# Translated to .py by Yundi Zhang
+# Jan 2017
+# Adapted to PandasBiogeme by Michel Bierlaire
+# Sun Oct 21 22:54:14 2018
+
 import numpy as np
 import pandas as pd
 import biogeme.database as db
@@ -22,9 +27,9 @@ globals().update(database.variables)
 #   4  Upper bound
 #   5  0: estimate the parameter, 1: keep it fixed
 ASC_WALKING		 = Beta('ASC_WALKING',0,None,None,1)
-ASC_CYCLING	 = Beta('ASC_CYCLING',0,None,None,0)
-ASC_DRIVING = Beta('ASC_DRIVING',0,None,None,0)
-ASC_PT = Beta('ASC_PT',0,None,None,0)
+ASC_CYCLING	 = Beta('ASC_CYCLING',-4.41,None,None,0)
+ASC_DRIVING = Beta('ASC_DRIVING',-1.48,None,None,0)
+ASC_PT = Beta('ASC_PT',-2.89,None,None,0)
 
 BETA_COST	 = Beta('BETA_COST',0,None,None,0)
 BETA_TIME_WALKING	 = Beta('BETA_TIME_WALKING',0,None,None,0)
@@ -32,7 +37,7 @@ BETA_TIME_CYCLING	 = Beta('BETA_TIME_CYCLING',0,None,None,0)
 BETA_TIME_DRIVING	 = Beta('BETA_TIME_DRIVING',0,None,None,0)
 BETA_TIME_PT	 = Beta('BETA_TIME_PT',0,None,None,0)
 BETA_DISTANCE_AGE_WALKING = Beta('BETA_DISTANCE_AGE_WALKING',0,None,None,0)
-BETA_DISTANCE_AGE_CYCLING = Beta('BETA_DISTANCE_AGE_CYCLING',0,None,None,0)
+BETA_DISTANCE_AGE_CYCLING = Beta('BETA_DISTANCE_AGE_CYCLING',0,None,None,1)
 BETA_DISTANCE_AGE_DRIVING = Beta('BETA_DISTANCE_AGE_DRIVING',0,None,None,0)
 BETA_DISTANCE_AGE_PT = Beta('BETA_DISTANCE_AGE_PT',0,None,None,0)
 
@@ -41,14 +46,15 @@ N_MOTOR = Beta('N_MOTOR',1,1,None, 1)
 N_ECO = Beta('N_ECO',1,1,None, 1)
 
 a_MOTOR_Pt = Beta('a_MOTOR_Pt',0.5,0,1,1)
-a_MOTOR_DRIVING = Beta('a_MOTOR_DRIVING',0.5,0,1,1)
-a_ECO_Pt = Beta('a_ECO_Pt',1,0,1,1)
+a_MOTOR_DRIVING = Beta('a_MOTOR_DRIVING',1,0,1,1)
+a_ECO_Pt = Beta('a_ECO_Pt',0.5,0,1,1)
 a_ECO_WALKING = Beta('a_ECO_WALKING',1,0,1,1)
 a_ECO_CYCLING = Beta('a_ECO_CYCLING',1,0,1,1)
 
 # Define here arithmetic expressions for name that are not directly available from the data
 dur_pt  = DefineVariable('dur_pt',(  dur_pt_access   +  dur_pt_rail   ) +  ( dur_pt_bus + dur_pt_int )  ,database)
 cost_driving = DefineVariable ('cost_driving', cost_driving_fuel + cost_driving_ccharge, database)
+bool_age =  DefineVariable ('bool_age',bool(age>50) , database)
 # car_time  = DefineVariable('car_time', car_ivtt   +  car_walk_time  ,database)
 # rate_G2E = DefineVariable('rate_G2E', 0.44378022,database)
 # car_cost_euro = DefineVariable('car_cost_euro', car_cost * rate_G2E,database)
@@ -59,10 +65,10 @@ thresholds = [None, 0.5 * pandas.dur_pt.mean(), 0.75 * pandas.dur_pt.mean(), pan
 initialBetas = [0,0,0,0,0,0]
 
 # Utilities
-Walking = ASC_WALKING  + BETA_TIME_WALKING * dur_walking + BETA_DISTANCE_AGE_WALKING * (distance * age)
-Cycling = ASC_CYCLING  + BETA_TIME_CYCLING * dur_cycling + BETA_DISTANCE_AGE_CYCLING * (distance * age)
-Driving = ASC_DRIVING  + BETA_COST * cost_driving + BETA_TIME_DRIVING * dur_driving + BETA_DISTANCE_AGE_DRIVING * (distance * age)
-Pt = ASC_PT  + BETA_COST * cost_transit + piecewiseFormula(dur_pt, thresholds, initialBetas) + BETA_DISTANCE_AGE_PT * (distance * age)
+Walking = ASC_WALKING  + BETA_TIME_WALKING * dur_walking + BETA_DISTANCE_AGE_WALKING * (distance * bool_age)
+Cycling = ASC_CYCLING  + BETA_TIME_CYCLING * dur_cycling + BETA_DISTANCE_AGE_CYCLING * (distance * bool_age)
+Driving = ASC_DRIVING  + BETA_COST * cost_driving + BETA_TIME_DRIVING * dur_driving + BETA_DISTANCE_AGE_DRIVING * (distance * bool_age)
+Pt = ASC_PT  + BETA_COST * cost_transit + piecewiseFormula(dur_pt, thresholds, initialBetas) + BETA_DISTANCE_AGE_PT * (distance * bool_age)
 V = {1: Walking,2: Cycling,3: Pt,4: Driving}
 av = {1: 1,2: 1, 3: 1, 4: 1}
 
