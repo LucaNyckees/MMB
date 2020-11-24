@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-9-2e529f79aef5> in <module>
+    187 } 
+    188 
+--> 189 biogeme = bio.BIOGEME(database, simulate)
+    190 biogeme.modelName = "London_Simul"
+    191 betas = biogeme.freeBetaNames
+
+~/my_venvs/biogeme_env/lib/python3.6/site-packages/biogeme/biogeme.py in __init__(self, database, formulas, userNotes, numberOfThreads, numberOfDraws, seed, skipAudit, removeUnusedVariables, suggestScales, missingData)
+    175         self.usedVariables = set()
+    176         for k, f in self.formulas.items():
+--> 177             self.usedVariables = self.usedVariables.union(f.setOfVariables())
+    178         if self.database.isPanel():
+    179             self.usedVariables.add(self.database.panelColumn)
+
+/usr/local/lib/python3.6/dist-packages/pandas/core/generic.py in __getattr__(self, name)
+   5137             if self._info_axis._can_hold_identifiers_and_holds_name(name):
+   5138                 return self[name]
+-> 5139             return object.__getattribute__(self, name)
+   5140 
+   5141     def __setattr__(self, name: str, value) -> None:
+
+AttributeError: 'Series' object has no attribute 'setOfVariables'
