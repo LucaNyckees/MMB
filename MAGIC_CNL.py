@@ -42,14 +42,24 @@ BETA_DISTANCE_AGE_DRIVING = Beta('BETA_DISTANCE_AGE_DRIVING',0,None,None,0)
 BETA_DISTANCE_AGE_PT = Beta('BETA_DISTANCE_AGE_PT',0,None,None,0)
 
 # parameters relevant to the nests
-N_MOTOR = Beta('N_MOTOR',1,1,None, 1)
-N_ECO = Beta('N_ECO',1,1,None, 1)
+N_1 = Beta('N_1',1,1.15,None, 0)
+N_2 = Beta('N_2',1,1.16,None, 0)
 
-a_MOTOR_Pt = Beta('a_MOTOR_Pt',0.5,0,1,1)
-a_MOTOR_DRIVING = Beta('a_MOTOR_DRIVING',1,0,1,1)
-a_ECO_Pt = Beta('a_ECO_Pt',0.5,0,1,1)
-a_ECO_WALKING = Beta('a_ECO_WALKING',1,0,1,1)
-a_ECO_CYCLING = Beta('a_ECO_CYCLING',1,0,1,1)
+a_N_1_WALKING = Beta('a_N_1_WALKING',1,0,1,1)
+#a_N_1_CYCLING = Beta('a_N_1_CYCLING',1,0,1,1)
+a_N_1_Pt = Beta('a_N_1_Pt',1,0,1,1)
+a_N_1_DRIVING = Beta('a_N_1_DRIVING',0.5,0,1,1)
+
+#a_N_2_WALKING = Beta('a_N_2_WALKING',1,0,1,1)
+a_N_2_CYCLING = Beta('a_N_2_CYCLING',1,0,1,1)
+#a_N_2_Pt = Beta('a_N_2_Pt',0.5,0,1,1)
+a_N_2_DRIVING = Beta('a_N_2_DRIVING',0.5,0,1,1)
+
+#a_N_3_WALKING = Beta('a_N_3_WALKING',1,0,1,1)
+#a_N_1_CYCLING = Beta('a_N_3_CYCLING',1,0,1,1)
+#a_N_3_Pt = Beta('a_N_3_Pt',0.5,0,1,1)
+#a_N_3_DRIVING = Beta('a_N_3_DRIVING',1,0,1,1)
+
 
 # Define here arithmetic expressions for name that are not directly available from the data
 dur_pt  = DefineVariable('dur_pt',(  dur_pt_access   +  dur_pt_rail   ) +  ( dur_pt_bus + dur_pt_int )  ,database)
@@ -73,13 +83,14 @@ V = {1: Walking,2: Cycling,3: Pt,4: Driving}
 av = {1: 1,2: 1, 3: 1, 4: 1}
 
 #Definitions of nests
-alpha_N_MOTOR = {1: 0, 2: 0, 3: a_MOTOR_Pt, 4: a_MOTOR_DRIVING}
-alpha_N_ECO = {1: a_ECO_WALKING, 2: a_ECO_CYCLING, 3: a_ECO_Pt, 4: 0}
+alpha_N_1 = {1: a_N_1_WALKING, 2: 0, 3: a_N_1_Pt, 4: a_N_1_DRIVING}
+alpha_N_2 = {1: 0, 2: a_N_2_CYCLING, 3: 0, 4: a_N_2_DRIVING}
 
-nest_N_MOTOR = N_MOTOR, alpha_N_MOTOR
-nest_N_ECO = N_ECO, alpha_N_ECO
+NEST1 = N_1, alpha_N_1
+NEST2 = N_2, alpha_N_2
+#NEST3 = N_3, alpha_N_3
 
-nests = nest_N_MOTOR, nest_N_ECO
+nests = NEST1, NEST2
 
 # CNL with fixed alphas
 logprob = logcnl_avail(V, av, nests, travel_mode)
