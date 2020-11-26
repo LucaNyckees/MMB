@@ -11,72 +11,16 @@ from biogeme.expressions import Beta, DefineVariable, log, Derive
 from biogeme.models import logit, loglogit, lognested, loglogit, logcnl_avail, piecewiseFormula
 import biogeme.results as res
 
-pandas = pd.read_table("lpmc14.dat")
-database = db.Database("lpmc14",pandas)
+pandas = pd.read_table("super_file.dat")
+database = db.Database("super_file",pandas)
 pd.options.display.float_format = '{:.3g}'.format
-
-#number of people in the sample
-S = len(pandas['trip_id'])
-#Number of male under 40 in the sample
-S_1 = 0
-#Number of male over 40 in the sample
-S_2 = 0
-#Number of female under 40 in the sample
-S_3 = 0
-#Number of female under 40 in the sample
-S_4 = 0
-
-for i in range(S):
-    if (pandas['female'][i] == 0):
-        if (pandas['age'][i] > 40):
-            S_2 += 1
-        else:
-            S_1 += 1
-    else:
-        if (pandas['age'][i] > 40):
-            S_4 += 1
-        else:
-            S_3 += 1
-
-#Number of male under 40 in the population
-N_1 = 2676249
-#Number of male over 40 in the population
-N_2 = 1633263
-#Number of female under 40 in the population
-N_3 = 2599058
-#Number of female under 40 in the population
-N_4 = 1765143
-#Number of individuals in the population
-N = N_1 + N_2 + N_3 + N_4
-
-w_1 = N_1*S/(N*S_1)
-w_2 = N_2*S/(N*S_2)
-w_3 = N_3*S/(N*S_3)
-w_4 = N_4*S/(N*S_4)
-
-l=[]
-i = 0
-for i in range(S):
-    if (pandas['female'][i] == 0):
-        if (pandas['age'][i] > 40):
-            l.append(w_2)
-        else:
-            l.append(w_1)
-    else:
-        if (pandas['age'][i] > 40):
-            l.append(w_4)
-        else:
-            l.append(w_3)
-
-Weights = pd.Series(l)
 
 globals().update(database.variables)
 
 #WEIGHT NORMALIZATION
-#sumWeights = database.data['Weights'].sum()
-sumWeights = Weights.sum()
+sumWeights = database.data['W'].sum()
 S= database.getSampleSize()
-sampleNormalizedWeight = Weights * S / sumWeights
+sampleNormalizedWeight = W * S / sumWeights
 
 #exclude = sp != 0
 #database.remove(exclude)
@@ -179,7 +123,7 @@ simulate = {
 'Prob. cycling': prob_Cycling,
 'Prob. walking': prob_Walking,
 'VOT driving': VOT_Driving,
-'Weighted VOT car': sampleNormalizedWeight * VOT_Driving,
+'Weighted VOT driving': sampleNormalizedWeight * VOT_Driving,
 'VOT pt': VOT_Pt,
 'Weighted VOT pt': sampleNormalizedWeight * VOT_Pt,
 'elast_driving_cost': elast_Driving_cost,
@@ -187,7 +131,7 @@ simulate = {
 } 
 
 biogeme = bio.BIOGEME(database, simulate)
-biogeme.modelName = "London_Simul"
+biogeme.modelName = "SIMUL"
 betas = biogeme.freeBetaNames
 results = res.bioResults(pickleFile = 'MAGIC_CNL.pickle')
 betaValues = results.getBetaValues()
@@ -206,10 +150,14 @@ marketShare_cycling = 100 * simulatedValues['Weighted prob. cycling'].mean()
 marketShare_walking = 100 * simulatedValues['Weighted prob. walking'].mean()
 
 #Aggregate market shares (Question 3)
+print('Question 3 results')
 print('Market share driving: {} %'.format(marketShare_driving))
 print('Market share pt: {} %'.format(marketShare_pt))
+print('Market share cycling: {} %'.format(marketShare_cycling))
+print('Market share walking: {} %'.format(marketShare_walking))
 
 # average VOTs (Question 5)
+print('Question 5 results')
 print('Average value of time for driving: {} %'.format(simulatedValues['Weighted VOT driving'].mean()))
 print('Average value of time for pt: {} %'.format(simulatedValues['Weighted VOT pt'].mean()))
 
@@ -223,5 +171,8 @@ print('Share of users choosing car with a higher probability for rail: {} %'.for
 print('Share of users choosing rail with a higher probability for car: {} %'.format(sim_car_real_rail))"""
 
 #Aggregate cost elasticities (Question 6)
+print('Question 6 results')
+print('Normalization factor for cost elasticity of driving alternative: {} %'.format(normalization_driving))
+print('Normalization factor for cost elasticity of pt alternative: {} %'.format(normalization_pt))
 print('Aggregate Cost Elasticity of driving alternative: {} %'.format(agg_elast_driving_cost))
 print('Aggregate Cost Elasticity of pt alternative: {} %'.format(agg_elast_pt_cost))
